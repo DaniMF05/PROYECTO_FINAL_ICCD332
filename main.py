@@ -20,6 +20,8 @@ csv_file = "clima-manta-hoy.csv"
 response = requests.get(url)
 data = response.json()
 
+
+
 # 📌 Verificar si la solicitud fue exitosa
 if response.status_code != 200:
     print(f"❌ ERROR: No se pudo obtener datos. Código {data.get('cod')}: {data.get('message')}")
@@ -48,8 +50,7 @@ weather_data = {
     "wind_deg": data['wind']['deg'],
     "wind_gust": data['wind'].get('gust', "N/A"),  # Usar get() para campos opcionales
     "clouds_all": data['clouds']['all'],
-    "sys_type": data['sys']['type'],
-    "sys_id": data['sys']['id'],
+    "sys_type": data['sys'].get('type', 'N/A'),
     "sys_country": data['sys']['country'],
     "sys_sunrise": data['sys']['sunrise'],
     "sys_sunset": data['sys']['sunset'],

@@ -1,0 +1,929 @@
+#+options: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+options: author:t broken-links:nil c:nil creator:nil
+#+options: d:(not "LOGBOOK") date:t e:t email:nil expand-links:t f:t
+#+options: inline:t num:t p:nil pri:nil prop:nil stat:t tags:t
+#+options: tasks:t tex:t timestamp:t title:t toc:t todo:t |:t
+#+title: Proyecto ICCD332 Arquitectura de Computadores
+#+date: 2024-02-08
+#+author: Joshua Daniel Menendez Farias
+#+email: joshua.menendez@epn.edu.ec
+#+language: es
+#+select_tags: export
+#+exclude_tags: noexport
+#+creator: Emacs 27.1 (Org mode 9.7.5)
+#+cite_export:
+
+
+
+
+* City Weather APP
+Este es el proyecto de fin de semestre en donde se pretende demostrar
+las destrezas obtenidas durante el transcurso de la asignatura de
+**Arquitectura de Computadores**.
+
+1. Conocimientos de sistema operativo Linux
+2. Conocimientos de Emacs/Jupyter
+3. Configuración de Entorno para Data Science con Mamba/Anaconda
+4. Literate Programming
+ 
+** Estructura del proyecto
+Se recomienda que el proyecto se cree en el /home/ del sistema
+operativo i.e. /home/<user>/. Allí se creará la carpeta /CityWeather/
+#+begin_src shell :results output :exports both
+cd 
+cd CityWeather
+pwd
+#+end_src
+
+#+RESULTS:
+: /home/danielmenendez/CityWeather
+
+El proyecto ha de tener los siguientes archivos y
+subdirectorios. Adaptar los nombres de los archivos según las ciudades
+específicas del grupo.
+
+#+begin_src shell :results output :exports results
+cd 
+cd CityWeather
+tree
+#+end_src
+
+#+RESULTS:
+#+begin_example
+.
+├── CityTemperatureAnalysis.ipynb
+├── CityTemperatureAnalysis.ipynb:Zone.Identifier
+├── clima-manta-hoy-etl.csv
+├── clima-manta-hoy.csv
+├── get-weather.sh
+├── main.py
+├── main.py~
+├── output.log
+└── weather-site
+    ├── build-site.el
+    ├── build-site.el~
+    ├── build.sh
+    ├── build.sh~
+    ├── content
+    │   ├── #index.org#
+    │   ├── images
+    │   │   ├── Humedad.png
+    │   │   ├── clouds_histogram.png
+    │   │   ├── direccion_viento.png
+    │   │   ├── sensacion_termica.png
+    │   │   ├── temperatura_humedad.png
+    │   │   ├── temperature.pdf
+    │   │   ├── temperature.png
+    │   │   └── velocidad_viento.png
+    │   ├── index.org
+    │   ├── index.org:Zone.Identifier
+    │   ├── index.org~
+    │   ├── temp_humidity_scatter.png
+    │   ├── temp_min_max.png
+    │   ├── temp_vs_feelslike.png
+    │   └── wind_speed.png
+    └── public
+        ├── images
+        │   ├── Humedad.png
+        │   ├── clouds_histogram.png
+        │   ├── direccion_viento.png
+        │   ├── sensacion_termica.png
+        │   ├── temperatura_humedad.png
+        │   ├── temperature.pdf
+        │   ├── temperature.png
+        │   └── velocidad_viento.png
+        ├── index.html
+        ├── styles.css
+        └── styles.css~
+
+6 directories, 39 files
+#+end_example
+
+Puede usar Emacs para la creación de la estructura de su proyecto
+usando comandos desde el bloque de shell. Recuerde ejecutar el bloque
+con ~C-c C-c~. Para insertar un bloque nuevo utilice ~C-c C-,~ o ~M-x
+org-insert-structure-template~. Seleccione la opción /s/ para src y
+adapte el bloque según su código tenga un comandos de shell, código de
+Python o de Java. En este documento ~.org~ dispone de varios ejemplos
+funcionales para escribir y presentar el código.
+
+#+begin_src shell :results output :exports both
+echo 'Aquí va sus comandos'
+#+end_src
+
+#+RESULTS:
+: Aquí va sus comandos
+
+** Formulación del Problema
+Se desea realizar un registro climatológico de una ciudad
+$\mathcal{C}$. Para esto, escriba un script de Python/Java que permita
+obtener datos climatológicos desde el API de [[https://openweathermap.org/current#one][openweathermap]]. El API
+hace uso de los valores de latitud $x$ y longitud $y$ de la ciudad
+$\mathcal{C}$ para devolver los valores actuales a un tiempo $t$.
+
+Los resultados obtenidos de la consulta al API se escriben en un
+archivo /clima-<ciudad>-hoy.csv/. Cada ejecución del script debe
+almacenar nuevos datos en el archivo. Utilice *crontab* y sus
+conocimientos de Linux y Programación para obtener datos del API de
+/openweathermap/ con una periodicidad de 15 minutos mediante la
+ejecución de un archivo ejecutable denominado
+/get-weather.sh/. Obtenga al menos 50 datos. Verifique los
+resultados. Todas las operaciones se realizan en Linux o en el
+WSL. Las etapas del problema se subdividen en:
+
+    1. Conformar los grupos de 2 estudiantes y definir la ciudad
+       objeto de estudio.
+    2.  Crear su API gratuito en [[https://openweathermap.org/current#one][openweathermap]]
+    3. Escribir un script en Python/Java que realice la consulta al
+       API y escriba los resultados en /clima-<ciudad>-hoy.csv/. El
+       archivo ha de contener toda la información que se obtiene del
+       API en columnas. Se debe observar que los datos sobre lluvia
+       (rain) y nieve (snow) se dan a veces si existe el fenómeno.
+    3. Desarrollar un ejecutable /get-weather.sh/ para ejecutar el
+       programa Python/Java.[fn:1]
+       #+begin_src shell :exports both
+         
+       #+end_src
+
+       #+RESULTS:
+
+    4. Configurar Crontab para la adquisición de datos. Escriba el
+       comando configurado. Respalde la ejecución de crontab en un
+       archivo output.log
+    5. Realizar la presentación del Trabajo utilizando la generación
+       del sitio web por medio de Emacs. Para esto es necesario crear
+       la carpeta **weather-site** dentro del proyecto. Puede ajustar el
+       /look and feel/ según sus preferencias. El servidor a usar es
+       el **simple-httpd** integrado en Emacs que debe ser instalado:
+       - Usando comandos Emacs: ~M-x package-install~ presionamos
+         enter (i.e. RET) y escribimos el nombre del paquete:
+         simple-httpd
+       - Configurando el archivo init.el
+
+       #+begin_src elisp
+         (use-package simple-httpd
+            :ensure t)
+       #+end_src
+
+       #+RESULTS:
+
+       Instrucciones de sobre la creación del sitio web se tiene en el
+       vídeo de instrucciones y en el archivo [[https://github.com/LeninGF/EPN-Lectures/blob/main/iccd332ArqComp-2024-A/Tutoriales/Org-Website/Org-Website.org][Org-Website.org]] en el
+       GitHub del curso
+
+    6. Su código debe estar respaldado en GitHub/BitBucket, la
+       dirección será remitida en la contestación de la tarea
+
+
+
+** Descripción del código
+En esta sección se detallan segmentos importantes del código desarrollado y la estrategia de solución adoptada.
+
+El código obtiene datos climatológicos de la ciudad de **Manta, Ecuador** usando el API de OpenWeatherMap, los procesa y los almacena en un archivo CSV.
+
+** Lectura del API
+Se realiza una solicitud HTTP al API de OpenWeatherMap para obtener datos del clima actual.
+
+#+begin_src python :session :results output exports both
+import requests
+
+API_KEY = "TU_API_KEY"
+LAT = -0.95  # 📍 Latitud de Manta
+LON = -80.7333  # 📍 Longitud de Manta
+url = f"http://api.openweathermap.org/data/2.5/weather?lat={LAT}&lon={LON}&appid={API_KEY}&units=metric"
+
+response = requests.get(url)
+data = response.json()
+
+if response.status_code != 200:
+    print(f"❌ ERROR: No se pudo obtener datos. Código {data.get('cod')}: {data.get('message')}")
+    exit(1)
+
+print("✅ Datos obtenidos con éxito")
+#+end_src
+
+#+RESULTS:
+: ❌ ERROR: No se pudo obtener datos. Código 401: Invalid API key. Please see https://openweathermap.org/faq#error401 for more info.
+
+** Conversión de JSON a Diccionario en Python
+Los datos obtenidos en formato JSON se convierten en un diccionario de Python para facilitar su manipulación.
+
+#+begin_src python :session :results output exports both
+weather_data = {
+    "dt": data['dt'],
+    "main_temp": data['main']['temp'],
+    "main_feels_like": data['main']['feels_like'],
+    "main_temp_min": data['main']['temp_min'],
+    "main_temp_max": data['main']['temp_max'],
+    "main_humidity": data['main']['humidity'],
+    "wind_speed": data['wind']['speed'],
+    "weather_0_description": data['weather'][0]['description'],
+    "sys_sunrise": data['sys']['sunrise'],
+    "sys_sunset": data['sys']['sunset']
+}
+
+print(weather_data)
+#+end_src
+
+** Guardado de datos en CSV
+Los datos climatológicos se almacenan en un archivo CSV para su posterior análisis.
+
+#+begin_src python :session :results output exports both
+import csv
+import os
+
+csv_file = "clima-manta-hoy.csv"
+file_exists = os.path.isfile(csv_file)
+
+with open(csv_file, mode="a", newline="", encoding="utf-8") as file:
+    writer = csv.DictWriter(file, fieldnames=weather_data.keys())
+    if not file_exists:
+        writer.writeheader()
+    writer.writerow(weather_data)
+
+print(f"✅ Datos guardados en {csv_file}")
+#+end_src
+
+** Script ejecutable en Shell
+Se proporciona un script para ejecutar el código en el entorno de **anaconda/mamba** denominado **danielemenendez**.
+
+#+begin_src shell :results output :exports both
+#!/usr/bin/sh
+source /home/danielmenendez/miniforge3/etc/profile.d/conda.sh
+eval "$(conda shell.bash hook)"
+conda activate danielmenendez
+python main.py
+#+end_src
+
+Finalmente, hacer ejecutable el script con:
+
+#+begin_src shell :results output :exports both
+chmod +x ejecutar.sh
+./ejecutar.sh
+#+end_src
+
+
+** Configuración de Crontab
+Se indica la configuración realizada en crontab para la adquisición de datos
+
+#+begin_src shell
+*/t * * * * cd <City>Weather && ./get-weather.sh >> output.log 2>&1
+#+end_src
+
+#+RESULTS:
+
+- Recuerde remplazar <City> por el nombre de la ciudad que analice
+- Recuerde ajustar el tiempo para potenciar tomar datos nuevos
+- Recuerde que ~2>&1~ permite guardar en ~output.log~ tanto la salida
+  del programa como los errores en la ejecución.
+* Presentación de resultados
+Para la pressentación de resultados se utilizan las librerías de Python:
+- matplotlib
+- pandas
+
+Alternativamente como pudo estudiar en el Jupyter Notebook
+[[https://github.com/LeninGF/EPN-Lectures/blob/main/iccd332ArqComp-2024-A/Proyectos/CityWeather/CityTemperatureAnalysis.ipynb][CityTemperatureAnalysis.ipynb]], existen librerías alternativas que se
+pueden utilizar para presentar los resultados gráficos. En ambos
+casos, para que funcione los siguientes bloques de código, es
+necesario que realice la instalación de los paquetes usando ~mamba
+install <nombre-paquete>~
+** Muestra Aleatoria de datos
+Presentar una muestra de 10 valores aleatorios de los datos obtenidos.
+#+caption: Lectura de archivo csv
+#+begin_src python :session :results output exports both
+import os
+import pandas as pd
+# lectura del archivo csv obtenido
+df = pd.read_csv('/home/danielmenendez/CityWeather/clima-manta-hoy-etl.csv')
+# se imprime la estructura del dataframe en forma de filas x columnas
+print(df.shape)
+#+end_src
+
+#+RESULTS:
+: (57, 30)
+
+
+
+Resultado del número de filas y columnas leídos del archivo csv
+#+RESULTS:
+: (26, 30)
+
+
+#+begin_src python :session :exports both :results output html
+import pandas as pd
+
+# Supongamos que df ya está definido
+table1 = df.sample(10)
+
+# Convertir el DataFrame a HTML
+tabla_html = table1.to_html(index=False, border=1)
+
+# Envolver la tabla en un contenedor con la clase table-container
+tabla_final = f'<div class="table-container">{tabla_html}</div>'
+print(tabla_final)
+#+end_src
+
+#+RESULTS:
+#+begin_export html
+<div class="table-container"><table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>dt</th>
+      <th>coord_lon</th>
+      <th>coord_lat</th>
+      <th>weather_0_id</th>
+      <th>weather_0_main</th>
+      <th>weather_0_description</th>
+      <th>weather_0_icon</th>
+      <th>base</th>
+      <th>main_temp</th>
+      <th>main_feels_like</th>
+      <th>main_temp_min</th>
+      <th>main_temp_max</th>
+      <th>main_pressure</th>
+      <th>main_humidity</th>
+      <th>main_sea_level</th>
+      <th>main_grnd_level</th>
+      <th>visibility</th>
+      <th>wind_speed</th>
+      <th>wind_deg</th>
+      <th>wind_gust</th>
+      <th>clouds_all</th>
+      <th>sys_type</th>
+      <th>sys_id</th>
+      <th>sys_country</th>
+      <th>sys_sunrise</th>
+      <th>sys_sunset</th>
+      <th>timezone</th>
+      <th>id</th>
+      <th>name</th>
+      <th>cod</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2025-02-08 20:45:02</td>
+      <td>-80.7333</td>
+      <td>-0.9500</td>
+      <td>500</td>
+      <td>Rain</td>
+      <td>light rain</td>
+      <td>10n</td>
+      <td>stations</td>
+      <td>23.88</td>
+      <td>24.78</td>
+      <td>23.88</td>
+      <td>23.88</td>
+      <td>1012</td>
+      <td>94</td>
+      <td>1012</td>
+      <td>1008</td>
+      <td>6000</td>
+      <td>3.60</td>
+      <td>240</td>
+      <td>NaN</td>
+      <td>75</td>
+      <td>1</td>
+      <td>8552</td>
+      <td>EC</td>
+      <td>2025-02-08 06:32:44</td>
+      <td>2025-02-08 18:41:37</td>
+      <td>-18000</td>
+      <td>3650767</td>
+      <td>Tarqui</td>
+      <td>200</td>
+    </tr>
+    <tr>
+      <td>2025-02-08 20:00:03</td>
+      <td>-80.7333</td>
+      <td>-0.9500</td>
+      <td>803</td>
+      <td>Clouds</td>
+      <td>broken clouds</td>
+      <td>04n</td>
+      <td>stations</td>
+      <td>26.88</td>
+      <td>29.30</td>
+      <td>26.88</td>
+      <td>26.88</td>
+      <td>1011</td>
+      <td>78</td>
+      <td>1011</td>
+      <td>1007</td>
+      <td>10000</td>
+      <td>3.09</td>
+      <td>250</td>
+      <td>NaN</td>
+      <td>75</td>
+      <td>1</td>
+      <td>8552</td>
+      <td>EC</td>
+      <td>2025-02-08 06:32:44</td>
+      <td>2025-02-08 18:41:37</td>
+      <td>-18000</td>
+      <td>3650767</td>
+      <td>Tarqui</td>
+      <td>200</td>
+    </tr>
+    <tr>
+      <td>2025-02-08 17:49:46</td>
+      <td>-80.7268</td>
+      <td>-0.9482</td>
+      <td>803</td>
+      <td>Clouds</td>
+      <td>broken clouds</td>
+      <td>04d</td>
+      <td>stations</td>
+      <td>28.04</td>
+      <td>31.89</td>
+      <td>28.04</td>
+      <td>28.04</td>
+      <td>1009</td>
+      <td>78</td>
+      <td>1009</td>
+      <td>1008</td>
+      <td>10000</td>
+      <td>4.63</td>
+      <td>270</td>
+      <td>NaN</td>
+      <td>75</td>
+      <td>1</td>
+      <td>8552</td>
+      <td>EC</td>
+      <td>2025-02-08 06:32:42</td>
+      <td>2025-02-08 18:41:35</td>
+      <td>-18000</td>
+      <td>3650767</td>
+      <td>Tarqui</td>
+      <td>200</td>
+    </tr>
+    <tr>
+      <td>2025-02-08 18:51:24</td>
+      <td>-80.7333</td>
+      <td>-0.9500</td>
+      <td>500</td>
+      <td>Rain</td>
+      <td>light rain</td>
+      <td>10n</td>
+      <td>stations</td>
+      <td>26.88</td>
+      <td>29.30</td>
+      <td>26.88</td>
+      <td>26.88</td>
+      <td>1010</td>
+      <td>78</td>
+      <td>1010</td>
+      <td>1006</td>
+      <td>10000</td>
+      <td>3.60</td>
+      <td>260</td>
+      <td>NaN</td>
+      <td>75</td>
+      <td>1</td>
+      <td>8552</td>
+      <td>EC</td>
+      <td>2025-02-08 06:32:44</td>
+      <td>2025-02-08 18:41:37</td>
+      <td>-18000</td>
+      <td>3650767</td>
+      <td>Tarqui</td>
+      <td>200</td>
+    </tr>
+    <tr>
+      <td>2025-02-08 19:15:03</td>
+      <td>-80.7333</td>
+      <td>-0.9500</td>
+      <td>500</td>
+      <td>Rain</td>
+      <td>light rain</td>
+      <td>10n</td>
+      <td>stations</td>
+      <td>26.88</td>
+      <td>29.30</td>
+      <td>26.88</td>
+      <td>26.88</td>
+      <td>1010</td>
+      <td>78</td>
+      <td>1010</td>
+      <td>1006</td>
+      <td>10000</td>
+      <td>3.09</td>
+      <td>250</td>
+      <td>NaN</td>
+      <td>75</td>
+      <td>1</td>
+      <td>8552</td>
+      <td>EC</td>
+      <td>2025-02-08 06:32:44</td>
+      <td>2025-02-08 18:41:37</td>
+      <td>-18000</td>
+      <td>3650767</td>
+      <td>Tarqui</td>
+      <td>200</td>
+    </tr>
+    <tr>
+      <td>2025-02-08 20:25:03</td>
+      <td>-80.7333</td>
+      <td>-0.9500</td>
+      <td>803</td>
+      <td>Clouds</td>
+      <td>broken clouds</td>
+      <td>04n</td>
+      <td>stations</td>
+      <td>25.88</td>
+      <td>26.69</td>
+      <td>25.88</td>
+      <td>25.88</td>
+      <td>1011</td>
+      <td>83</td>
+      <td>1011</td>
+      <td>1007</td>
+      <td>10000</td>
+      <td>2.06</td>
+      <td>240</td>
+      <td>NaN</td>
+      <td>75</td>
+      <td>1</td>
+      <td>8552</td>
+      <td>EC</td>
+      <td>2025-02-08 06:32:44</td>
+      <td>2025-02-08 18:41:37</td>
+      <td>-18000</td>
+      <td>3650767</td>
+      <td>Tarqui</td>
+      <td>200</td>
+    </tr>
+    <tr>
+      <td>2025-02-08 21:10:03</td>
+      <td>-80.7333</td>
+      <td>-0.9500</td>
+      <td>501</td>
+      <td>Rain</td>
+      <td>moderate rain</td>
+      <td>10n</td>
+      <td>stations</td>
+      <td>24.88</td>
+      <td>25.88</td>
+      <td>24.88</td>
+      <td>24.88</td>
+      <td>1012</td>
+      <td>94</td>
+      <td>1012</td>
+      <td>1008</td>
+      <td>4000</td>
+      <td>2.57</td>
+      <td>200</td>
+      <td>NaN</td>
+      <td>75</td>
+      <td>1</td>
+      <td>8552</td>
+      <td>EC</td>
+      <td>2025-02-08 06:32:44</td>
+      <td>2025-02-08 18:41:37</td>
+      <td>-18000</td>
+      <td>3650767</td>
+      <td>Tarqui</td>
+      <td>200</td>
+    </tr>
+    <tr>
+      <td>2025-02-08 18:13:43</td>
+      <td>-80.7333</td>
+      <td>-0.9500</td>
+      <td>803</td>
+      <td>Clouds</td>
+      <td>broken clouds</td>
+      <td>04d</td>
+      <td>stations</td>
+      <td>26.88</td>
+      <td>29.30</td>
+      <td>26.88</td>
+      <td>26.88</td>
+      <td>1009</td>
+      <td>78</td>
+      <td>1009</td>
+      <td>1005</td>
+      <td>10000</td>
+      <td>3.60</td>
+      <td>260</td>
+      <td>NaN</td>
+      <td>75</td>
+      <td>1</td>
+      <td>8552</td>
+      <td>EC</td>
+      <td>2025-02-08 06:32:44</td>
+      <td>2025-02-08 18:41:37</td>
+      <td>-18000</td>
+      <td>3650767</td>
+      <td>Tarqui</td>
+      <td>200</td>
+    </tr>
+    <tr>
+      <td>2025-02-08 21:50:03</td>
+      <td>-80.7333</td>
+      <td>-0.9500</td>
+      <td>501</td>
+      <td>Rain</td>
+      <td>moderate rain</td>
+      <td>10n</td>
+      <td>stations</td>
+      <td>24.88</td>
+      <td>25.88</td>
+      <td>24.88</td>
+      <td>24.88</td>
+      <td>1013</td>
+      <td>94</td>
+      <td>1013</td>
+      <td>1009</td>
+      <td>4000</td>
+      <td>2.57</td>
+      <td>200</td>
+      <td>NaN</td>
+      <td>75</td>
+      <td>1</td>
+      <td>8552</td>
+      <td>EC</td>
+      <td>2025-02-08 06:32:44</td>
+      <td>2025-02-08 18:41:37</td>
+      <td>-18000</td>
+      <td>3650767</td>
+      <td>Tarqui</td>
+      <td>200</td>
+    </tr>
+    <tr>
+      <td>2025-02-08 19:15:03</td>
+      <td>-80.7333</td>
+      <td>-0.9500</td>
+      <td>500</td>
+      <td>Rain</td>
+      <td>light rain</td>
+      <td>10n</td>
+      <td>stations</td>
+      <td>26.88</td>
+      <td>29.30</td>
+      <td>26.88</td>
+      <td>26.88</td>
+      <td>1010</td>
+      <td>78</td>
+      <td>1010</td>
+      <td>1006</td>
+      <td>10000</td>
+      <td>3.09</td>
+      <td>250</td>
+      <td>NaN</td>
+      <td>75</td>
+      <td>1</td>
+      <td>8552</td>
+      <td>EC</td>
+      <td>2025-02-08 06:32:44</td>
+      <td>2025-02-08 18:41:37</td>
+      <td>-18000</td>
+      <td>3650767</td>
+      <td>Tarqui</td>
+      <td>200</td>
+    </tr>
+  </tbody>
+</table></div>
+#+end_export
+
+** Gráfica Temperatura vs Tiempo
+Realizar una gráfica de la Temperatura en el tiempo.
+
+
+
+El siguiente cógido permite hacer la gráfica de la temperatura vs
+tiempo para Org 9.7+. Para saber que versión dispone puede ejecutar
+~M-x org-version~
+
+#+begin_src python :results file :exports both :session
+  import matplotlib.pyplot as plt
+  import matplotlib.dates as mdates
+
+  # Define el tamaño de la figura de salida
+  fig = plt.figure(figsize=(8,6))
+  plt.plot(df['dt'], df['main_temp']) # dibuja las variables dt y temperatura
+  # ajuste para presentacion de fechas en la imagen 
+  plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=2))
+  # plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))  
+  plt.grid()
+  # Titulo que obtiene el nombre de la ciudad del DataFrame
+  plt.title(f'Temperatura vs Tiempo en {next(iter(set(df.name)))}')
+  plt.xticks(rotation=40) # rotación de las etiquetas 40°
+  fig.tight_layout()
+
+  fname = 'images/temperature.png'
+
+  plt.savefig(fname)
+  
+  fname
+#+end_src
+
+#+RESULTS:
+[[file:images/temperature.png]]
+
+
+#+caption: Gráfica Temperatura vs Tiempo
+
+
+
+
+
+
+**  Realice una gráfica de Humedad con respecto al tiempo
+
+#+begin_src python :results file :exports both :session
+  import matplotlib.pyplot as plt
+  import matplotlib.dates as mdates
+
+  # Define el tamaño de la figura de salida
+  fig = plt.figure(figsize=(8,6))
+  plt.plot(df['dt'], df['main_humidity']) # dibuja las variables dt y temperatura
+  # ajuste para presentacion de fechas en la imagen 
+  plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=2))
+  # plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))  
+  plt.grid()
+  # Titulo que obtiene el nombre de la ciudad del DataFrame
+  plt.title(f'Humedad vs Tiempo en {next(iter(set(df.name)))}')
+  plt.xticks(rotation=40) # rotación de las etiquetas 40°
+  fig.tight_layout()
+
+  hname = 'images/Humedad.png'
+
+  plt.savefig(hname)
+  
+  hname
+#+end_src
+
+#+RESULTS:
+[[file:images/Humedad.png]]
+
+**  Diagrama de dispersion entre la temperatura y la humedad
+
+#+begin_src python :results file :exports both :session
+import matplotlib.pyplot as plt
+import pandas as pd
+
+# Convertir datos a formato numérico
+df['main_temp'] = pd.to_numeric(df['main_temp'])
+df['main_humidity'] = pd.to_numeric(df['main_humidity'])
+
+# Crear figura
+fig, ax = plt.subplots(figsize=(8,6))
+ax.scatter(df['main_temp'], df['main_humidity'], color='purple', alpha=0.6)
+
+# Etiquetas
+ax.set_title("Relación entre Temperatura y Humedad")
+ax.set_xlabel("Temperatura (°C)")
+ax.set_ylabel("Humedad (%)")
+plt.grid()
+
+# Guardar la imagen
+dname = "images/temperatura_humedad.png"
+plt.savefig(dname, bbox_inches='tight')
+dname
+#+end_src
+
+#+RESULTS:
+[[file:images/temperatura_humedad.png]]
+
+
+** Diagrama viento vs tiempo
+
+#+begin_src python :results file :exports both :session
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import pandas as pd
+
+# Convertir columnas a numéricas y fechas
+df['dt'] = pd.to_datetime(df['dt'])
+df['wind_speed'] = pd.to_numeric(df['wind_speed'])
+df['wind_gust'] = pd.to_numeric(df['wind_gust'])
+
+# Crear figura
+fig, ax = plt.subplots(figsize=(8,6))
+ax.plot(df['dt'], df['wind_speed'], label="Velocidad del Viento", color='blue')
+ax.plot(df['dt'], df['wind_gust'], label="Ráfaga de Viento", linestyle='dashed', color='red')
+
+# Formatear el eje X
+ax.xaxis.set_major_locator(mdates.AutoDateLocator())
+ax.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
+plt.xticks(rotation=40)
+
+# Etiquetas
+ax.set_title('Velocidad del Viento y Ráfagas vs. Tiempo')
+ax.set_xlabel("Tiempo")
+ax.set_ylabel("Velocidad (m/s)")
+plt.legend()
+plt.grid()
+
+# Guardar la imagen
+rname = "images/velocidad_viento.png"
+plt.savefig(rname, bbox_inches='tight')
+rname
+#+end_src
+
+#+RESULTS:
+[[file:images/velocidad_viento.png]]
+
+
+** Diagrama Temperatura vs sensacion termica
+
+#+begin_src python :results file :exports both :session
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import pandas as pd
+
+# Convertir columnas a tipo numérico y fecha
+df['dt'] = pd.to_datetime(df['dt'])
+df['main_temp'] = pd.to_numeric(df['main_temp'])
+df['main_feels_like'] = pd.to_numeric(df['main_feels_like'])
+
+# Crear la figura
+fig, ax = plt.subplots(figsize=(8,6))
+ax.plot(df['dt'], df['main_temp'], label="Temperatura Real (°C)", color="red", linestyle="-")
+ax.plot(df['dt'], df['main_feels_like'], label="Sensación Térmica (°C)", color="blue", linestyle="dashed")
+
+# Formatear el eje X
+ax.xaxis.set_major_locator(mdates.AutoDateLocator())
+ax.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
+plt.xticks(rotation=40)
+
+# Etiquetas y título
+ax.set_title("Comparación: Temperatura vs. Sensación Térmica")
+ax.set_xlabel("Tiempo")
+ax.set_ylabel("Temperatura (°C)")
+plt.legend()
+plt.grid()
+
+# Guardar la imagen
+sname = "images/sensacion_termica.png"
+plt.savefig(sname, bbox_inches='tight')
+sname
+#+end_src
+
+#+RESULTS:
+[[file:images/sensacion_termica.png]]
+
+
+
+** Diagrama de roseta de la direccion del viento
+
+#+begin_src python :results file :exports both :session
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+
+# Convertir columnas a numéricas
+df['wind_deg'] = pd.to_numeric(df['wind_deg'])
+df['wind_speed'] = pd.to_numeric(df['wind_speed'])
+
+# Convertir dirección a radianes
+angles = np.radians(df['wind_deg'])
+
+# Crear figura polar
+fig, ax = plt.subplots(figsize=(8,6), subplot_kw=dict(polar=True))
+ax.scatter(angles, df['wind_speed'], c=df['wind_speed'], cmap="coolwarm", alpha=0.75)
+
+# Etiquetas
+ax.set_title("Diagrama de Roseta: Dirección y Velocidad del Viento")
+ax.set_xticks(np.radians([0, 45, 90, 135, 180, 225, 270, 315]))
+ax.set_xticklabels(["N", "NE", "E", "SE", "S", "SO", "O", "NO"])
+ax.set_yticklabels([])
+
+# Guardar la imagen
+wrname = "images/direccion_viento.png"
+plt.savefig(wrname, bbox_inches='tight')
+wrname
+#+end_src
+
+#+RESULTS:
+[[file:images/direccion_viento.png]]
+
+
+
+
+#+begin_src shell
+cp -rfv ./images/* /home/danielmenendez/CityWeather/weather-site/public/images
+#+end_src
+
+#+RESULTS:
+| './images/Humedad.png'             | -> | '/home/danielmenendez/CityWeather/weather-site/public/images/Humedad.png'             |
+| './images/clouds_histogram.png'    | -> | '/home/danielmenendez/CityWeather/weather-site/public/images/clouds_histogram.png'    |
+| './images/direccion_viento.png'    | -> | '/home/danielmenendez/CityWeather/weather-site/public/images/direccion_viento.png'    |
+| './images/sensacion_termica.png'   | -> | '/home/danielmenendez/CityWeather/weather-site/public/images/sensacion_termica.png'   |
+| './images/temperatura_humedad.png' | -> | '/home/danielmenendez/CityWeather/weather-site/public/images/temperatura_humedad.png' |
+| './images/temperature.pdf'         | -> | '/home/danielmenendez/CityWeather/weather-site/public/images/temperature.pdf'         |
+| './images/temperature.png'         | -> | '/home/danielmenendez/CityWeather/weather-site/public/images/temperature.png'         |
+| './images/velocidad_viento.png'    | -> | '/home/danielmenendez/CityWeather/weather-site/public/images/velocidad_viento.png'    |
+
+
+
+* Referencias
+- [[https://emacs.stackexchange.com/questions/28715/get-pandas-data-frame-as-a-table-in-org-babel][presentar dataframe como tabla en emacs org]]
+- [[https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-python.html][Python Source Code Blocks in Org Mode]]
+- [[https://systemcrafters.net/publishing-websites-with-org-mode/building-the-site/][Systems Crafters Construir tu sitio web con Modo Emacs Org]]
+- [[https://www.youtube.com/watch?v=AfkrzFodoNw][Vídeo Youtube Build Your Website with Org Mode]]
+* Footnotes
+
+[fn:1] Recuerde que su máquina ha de disponer de un entorno de
+anaconda/mamba denominado iccd332 en el cual se dispone del interprete
+de Python
